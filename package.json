@@ -1,0 +1,17 @@
+{
+  "name": "webdriverio-standalone",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "wdio": "wdio run ./wdio.conf.ts"
+  },
+  "dependencies": {
+    "@wdio/cli": "^9.2.1"
+  },
+  "devDependencies": {
+    "@wdio/local-runner": "^9.2.1",
+    "@wdio/mocha-framework": "^9.1.3"
+  }
+}
