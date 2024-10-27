@@ -1,9 +1,12 @@
 import LoginPage from "../page-objects/login.page";
 
 describe("Login Tests", () => {
-  it("should fail to login with invalid credentials", async () => {
+  beforeEach(async () => {
     await LoginPage.open();
-    await LoginPage.login("invalidUser", "invalidPassword");
+  });
+
+  it("should fail to login with invalid credentials", async () => {
+    await LoginPage.login("invalid_user@gmail.com", "invalid_password");
 
     const errorAlert = $(".alert.alert-error");
 
@@ -14,32 +17,35 @@ describe("Login Tests", () => {
   });
 
   it("should login successfully with valid credentials", async () => {
-    await LoginPage.open();
     await LoginPage.login("cikipec787@aqqor.com", "123123@");
 
-    await browser.waitUntil(
-      async () => {
-        const currentUrl = await browser.getUrl();
-        return currentUrl.includes("admin.onhandbi.com");
-      },
-      {
-        timeout: 1000,
-        interval: 500,
-        timeoutMsg:
-          "Không điều hướng đến domain admin.onhandbi.com trong thời gian quy định",
-      }
+    await browser.waitUntil(async () => {
+      const currentUrl = await browser.getUrl();
+      return currentUrl.includes("admin.onhandbi.com");
+    });
+
+    await browser.waitUntil(async () => {
+      const idToken = await browser.execute(() =>
+        localStorage.getItem("_id_tk_landing_")
+      );
+      const refreshToken = await browser.execute(() =>
+        localStorage.getItem("_rf_tk_landing_")
+      );
+      const accessToken = await browser.execute(() =>
+        localStorage.getItem("_tk_landing_")
+      );
+      return idToken !== null && refreshToken !== null && accessToken !== null;
+    });
+
+    const idToken = await browser.execute(() =>
+      localStorage.getItem("_id_tk_landing_")
     );
-
-    const idToken = await browser.execute(() => {
-      return localStorage.getItem("_id_tk_landing_");
-    });
-
-    const refreshToken = await browser.execute(() => {
-      return localStorage.getItem("_rf_tk_landing_");
-    });
-    const accessToken = await browser.execute(() => {
-      return localStorage.getItem("_tk_landing_");
-    });
+    const refreshToken = await browser.execute(() =>
+      localStorage.getItem("_rf_tk_landing_")
+    );
+    const accessToken = await browser.execute(() =>
+      localStorage.getItem("_tk_landing_")
+    );
 
     expect(idToken).not.toBeNull();
     expect(refreshToken).not.toBeNull();

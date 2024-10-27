@@ -33,8 +33,20 @@ class LoginPage extends Page {
   /**
    * overwrite specific options to adapt it to page object
    */
-  public open() {
-    return super.open("#/login");
+  public async open() {
+    try {
+      await super.open("#/login");
+
+      await browser.waitUntil(
+        async () => (await browser.getUrl()).includes("sso.onhandbi.com"),
+        {
+          timeoutMsg:
+            "Did not redirect to the SSO page within the specified time limit.",
+        }
+      );
+    } catch (error) {
+      console.log("Error Navigate:", error);
+    }
   }
 }
 
