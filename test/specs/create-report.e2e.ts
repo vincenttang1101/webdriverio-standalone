@@ -44,14 +44,14 @@ describe("Create Report Tests", () => {
       __dirname,
       "sales_returns_sample_v201912.pbix"
     );
-
-    console.log("filePath", filePath);
     await fileInput.addValue(filePath);
 
     await browser.pause(15000);
 
-    const uploadedFileName = await fileInput.getValue();
-    console.log("Uploaded file name:", uploadedFileName);
-    expect(uploadedFileName).toContain("file.pbix");
+    const fileNameDisplay = $("span.overflow-hidden.whitespace-nowrap");
+    const displayedFileName = await fileNameDisplay.getText();
+
+    console.log("fileNameDisplay", displayedFileName);
+    expect(displayedFileName).toContain("sales_returns_sample_v201912.pbix");
   });
 });
