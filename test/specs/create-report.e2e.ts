@@ -114,6 +114,12 @@ describe("Create Report Tests", () => {
     const filePath = path.resolve(__dirname, "test_report.pbix");
     await fileInput.addValue(filePath);
 
+    const navBarOption = $("#navbar");
+    const filterPaneOption = $("#filterPane");
+
+    await navBarOption.click();
+    await filterPaneOption.click();
+
     await browser.pause(15000);
     const createButton = $(
       "//button[@type='submit' and contains(text(), 'Create')]"
