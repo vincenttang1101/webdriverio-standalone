@@ -85,8 +85,9 @@ describe("Create Report Tests", () => {
         (await browser.getUrl()) ===
         "https://admin.onhandbi.com/#/user/reports",
       {
-        timeout: 5000,
-        timeoutMsg: "Không điều hướng đến trang báo cáo sau khi nhấn Cancel",
+        timeout: 2000,
+        timeoutMsg:
+          "Did not navigate to the reports page after clicking Cancel",
       }
     );
 
@@ -107,6 +108,12 @@ describe("Create Report Tests", () => {
     await startDateInput.setValue("11-23-2024");
     await expiredDateInput.setValue("12-24-2024");
 
+    const navBarOption = $("#navbar");
+    const filterPaneOption = $("#filterPane");
+
+    await navBarOption.click();
+    await filterPaneOption.click();
+
     const uploadOption = $("#upload-0");
     await uploadOption.click();
 
@@ -114,13 +121,8 @@ describe("Create Report Tests", () => {
     const filePath = path.resolve(__dirname, "test_report.pbix");
     await fileInput.addValue(filePath);
 
-    const navBarOption = $("#navbar");
-    const filterPaneOption = $("#filterPane");
-
-    await navBarOption.click();
-    await filterPaneOption.click();
-
     await browser.pause(15000);
+
     const createButton = $(
       "//button[@type='submit' and contains(text(), 'Create')]"
     );
@@ -131,4 +133,39 @@ describe("Create Report Tests", () => {
     const isToastDisplayed = await successMessage.isDisplayed();
     expect(isToastDisplayed).toBe(true);
   });
+
+  // it("should create report via Report ID input", async () => {
+  //   const titleInput = $("#report-title");
+  //   await titleInput.setValue("Report via ID");
+
+  //   const workspaceSelect = $("#workspaceId");
+  //   await workspaceSelect.selectByVisibleText("OHBI Premium - OHBI");
+
+  //   const startDateInput = $("#startedDate");
+  //   const expiredDateInput = $("#expiredDate");
+  //   await startDateInput.setValue("11-23-2024");
+  //   await expiredDateInput.setValue("12-24-2024");
+
+  //   const navBarOption = $("#navbar");
+  //   const filterPaneOption = $("#filterPane");
+
+  //   await navBarOption.click();
+  //   await filterPaneOption.click();
+
+  //   const reportIdOption = $("#upload-1");
+  //   await reportIdOption.click();
+
+  //   const reportIdInput = $("#pbi");
+  //   await reportIdInput.setValue("15cf8d8d-778a-4529-b9b9-ed510ab4c0cb");
+
+  //   const createButton = $(
+  //     "//button[@type='submit' and contains(text(), 'Create')]"
+  //   );
+  //   await createButton.click();
+
+  //   const successMessage = $(".toast.bg-success.show.showing");
+  //   await successMessage.waitForDisplayed();
+  //   const isToastDisplayed = await successMessage.isDisplayed();
+  //   expect(isToastDisplayed).toBe(true);
+  // });
 });
