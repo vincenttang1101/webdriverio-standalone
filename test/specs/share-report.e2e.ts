@@ -57,6 +57,54 @@ describe("Share Report Test", () => {
     await LoginPage.open();
     await LoginPage.login("cikipec787@aqqor.com", "123123@");
 
+    await browser.pause(2000);
+    await browser.url(copiedLink);
+    await browser.pause(3000);
+
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toBe(copiedLink);
+  });
+
+  it("should allow only the owner to access the report", async () => {
+    await logout();
+    await LoginPage.open();
+    await LoginPage.login("bepotod505@inikale.com", "123123@");
+    await browser.url("https://admin.onhandbi.com/#/reports");
+    await browser.pause(2000);
+
+    const latestReportRow = $("table.table-hover tbody tr:first-child");
+
+    const optionsButton = latestReportRow.$(
+      "button.Dropdown_button-secondary__-1SjD"
+    );
+    await optionsButton.click();
+
+    const shareOption = latestReportRow.$("//*[contains(text(), 'Share')]");
+    await shareOption.click();
+
+    const anyoneWithLinkOption = $("//*[text()='Anyone with the link']");
+    await anyoneWithLinkOption.moveTo();
+
+    const onOption = $("//*[text()='On']");
+    await onOption.click();
+
+    await shareOption.click();
+
+    const onlyMeOption = $("//*[contains(text(), 'Only me')]");
+    await onlyMeOption.click();
+
+    const copyLinkOption = $("//*[contains(text(), 'Copy link')]");
+    await copyLinkOption.click();
+
+    const copiedLink = await browser.execute(() =>
+      navigator.clipboard.readText()
+    );
+
+    await logout();
+
+    await LoginPage.open();
+    await LoginPage.login("cikipec787@aqqor.com", "123123@");
+
     await browser.url(copiedLink);
   });
 
