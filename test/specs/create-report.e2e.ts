@@ -4,7 +4,7 @@ import path from "path";
 describe("Create Report Tests", () => {
   before(async () => {
     await LoginPage.open();
-    await LoginPage.login("cikipec787@aqqor.com", "123123@");
+    await LoginPage.login("bepotod505@inikale.com", "123123@");
   });
 
   beforeEach(async () => {
@@ -98,7 +98,7 @@ describe("Create Report Tests", () => {
 
   it("should create report via PBIX file upload", async () => {
     const titleInput = $("#report-title");
-    await titleInput.setValue("PBIX Report");
+    await titleInput.setValue("Report via PBIX");
 
     const workspaceSelect = $("#workspaceId");
     await workspaceSelect.selectByVisibleText("OHBI Premium - OHBI");
@@ -134,38 +134,38 @@ describe("Create Report Tests", () => {
     expect(isToastDisplayed).toBe(true);
   });
 
-  // it("should create report via Report ID input", async () => {
-  //   const titleInput = $("#report-title");
-  //   await titleInput.setValue("Report via ID");
+  it("should create report via Report ID input", async () => {
+    const titleInput = $("#report-title");
+    await titleInput.setValue("Report via ID");
 
-  //   const workspaceSelect = $("#workspaceId");
-  //   await workspaceSelect.selectByVisibleText("OHBI Premium - OHBI");
+    const workspaceSelect = $("#workspaceId");
+    await workspaceSelect.selectByVisibleText("OHBI Premium - OHBI");
 
-  //   const startDateInput = $("#startedDate");
-  //   const expiredDateInput = $("#expiredDate");
-  //   await startDateInput.setValue("11-23-2024");
-  //   await expiredDateInput.setValue("12-24-2024");
+    const startDateInput = $("#startedDate");
+    const expiredDateInput = $("#expiredDate");
+    await startDateInput.setValue("11-23-2024");
+    await expiredDateInput.setValue("12-24-2024");
 
-  //   const navBarOption = $("#navbar");
-  //   const filterPaneOption = $("#filterPane");
+    const navBarOption = $("#navbar");
+    const filterPaneOption = $("#filterPane");
 
-  //   await navBarOption.click();
-  //   await filterPaneOption.click();
+    await navBarOption.click();
+    await filterPaneOption.click();
 
-  //   const reportIdOption = $("#upload-1");
-  //   await reportIdOption.click();
+    const reportIdOption = $("#upload-1");
+    await reportIdOption.click();
 
-  //   const reportIdInput = $("#pbi");
-  //   await reportIdInput.setValue("15cf8d8d-778a-4529-b9b9-ed510ab4c0cb");
+    const reportIdInput = $("#pbi");
+    await reportIdInput.setValue("15cf8d8d-778a-4529-b9b9-ed510ab4c0cb");
 
-  //   const createButton = $(
-  //     "//button[@type='submit' and contains(text(), 'Create')]"
-  //   );
-  //   await createButton.click();
+    const createButton = $(
+      "//button[@type='submit' and contains(text(), 'Create')]"
+    );
+    await createButton.click();
 
-  //   const successMessage = $(".toast.bg-success.show.showing");
-  //   await successMessage.waitForDisplayed();
-  //   const isToastDisplayed = await successMessage.isDisplayed();
-  //   expect(isToastDisplayed).toBe(true);
-  // });
+    const successMessage = $(".toast.bg-success.show.showing");
+    await successMessage.waitForDisplayed();
+    const isToastDisplayed = await successMessage.isDisplayed();
+    expect(isToastDisplayed).toBe(true);
+  });
 });

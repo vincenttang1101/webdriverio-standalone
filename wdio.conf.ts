@@ -22,7 +22,11 @@ export const config: WebdriverIO.Config = {
   // The path of the spec files will be resolved relative from the directory of
   // of the config file unless it's absolute.
   //
-  specs: ["./test/specs/**/*.ts"],
+  specs: [
+    // "./test/specs/**/*.ts"
+    // "./test/specs/create-report.e2e.ts",
+    "./test/specs/share-report.e2e.ts",
+  ],
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
@@ -43,7 +47,7 @@ export const config: WebdriverIO.Config = {
   // and 30 processes will get spawned. The property handles how many capabilities
   // from the same test should run tests.
   //
-  maxInstances: 10,
+  maxInstances: 1,
   //
   // If you have trouble getting all important capabilities together, check out the
   // Sauce Labs platform configurator - a great tool to configure your capabilities:

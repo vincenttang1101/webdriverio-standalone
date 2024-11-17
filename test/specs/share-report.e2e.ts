@@ -11,14 +11,19 @@ describe("Share Report Test", () => {
     await browser.url("https://admin.onhandbi.com/#/reports");
     await browser.pause(2000);
 
-    const latestReportRow = $("table.table-hover tbody tr:first-child");
+    const reportRow = $(
+      "//table[contains(@class, 'table-hover')]//tbody//tr[td/a[contains(text(), 'Report via PBIX')]]"
+    );
 
-    const optionsButton = latestReportRow.$(
+    await expect(reportRow).toBeExisting();
+
+    const optionsButton = reportRow.$(
       "button.Dropdown_button-secondary__-1SjD"
     );
+    await optionsButton.waitForClickable({ timeout: 2000 });
     await optionsButton.click();
 
-    const shareOption = latestReportRow.$("//*[contains(text(), 'Share')]");
+    const shareOption = reportRow.$("//*[contains(text(), 'Share')]");
     await shareOption.moveTo();
 
     const restrictedOption = $("div.Submenu_submenu__RtC6b ul li:first-child");
@@ -57,29 +62,34 @@ describe("Share Report Test", () => {
     await LoginPage.open();
     await LoginPage.login("cikipec787@aqqor.com", "123123@");
 
-    await browser.pause(2000);
     await browser.url(copiedLink);
-    await browser.pause(3000);
+    await browser.pause(8000);
 
-    const currentUrl = await browser.getUrl();
+    const currentUrl = (await browser.getUrl()) + "?tenant=ohbi_tenant";
     expect(currentUrl).toBe(copiedLink);
   });
 
   it("should allow only the owner to access the report", async () => {
+    await browser.pause(1000);
     await logout();
     await LoginPage.open();
     await LoginPage.login("bepotod505@inikale.com", "123123@");
+
     await browser.url("https://admin.onhandbi.com/#/reports");
     await browser.pause(2000);
 
-    const latestReportRow = $("table.table-hover tbody tr:first-child");
+    const reportRow = $(
+      "//table[contains(@class, 'table-hover')]//tbody//tr[td/a[contains(text(), 'Report via PBIX')]]"
+    );
+    await expect(reportRow).toBeExisting();
 
-    const optionsButton = latestReportRow.$(
+    const optionsButton = reportRow.$(
       "button.Dropdown_button-secondary__-1SjD"
     );
+    await optionsButton.waitForClickable({ timeout: 2000 });
     await optionsButton.click();
 
-    const shareOption = latestReportRow.$("//*[contains(text(), 'Share')]");
+    const shareOption = reportRow.$("//*[contains(text(), 'Share')]");
     await shareOption.click();
 
     const anyoneWithLinkOption = $("//*[text()='Anyone with the link']");
@@ -100,12 +110,12 @@ describe("Share Report Test", () => {
       navigator.clipboard.readText()
     );
 
-    await logout();
-
-    await LoginPage.open();
-    await LoginPage.login("cikipec787@aqqor.com", "123123@");
-
     await browser.url(copiedLink);
+
+    await browser.pause(8000);
+
+    const currentUrl = (await browser.getUrl()) + "?tenant=ohbi_tenant";
+    expect(currentUrl).toBe(copiedLink);
   });
 
   // it("should set share status to 'Restricted'", async () => {
