@@ -1,5 +1,25 @@
+import dayjs from "dayjs";
 import LoginPage from "../page-objects/login.page";
 import path from "path";
+
+function getStartDateAndExpiredDate(monthsToAdd = 1, format = "MM-DD-YYYY") {
+  const today = dayjs();
+  const nextMonth = today.add(monthsToAdd, "month");
+
+  return {
+    startDate: today.format(format),
+    expiredDate: nextMonth.format(format),
+  };
+}
+
+async function checkSuccessMessage(
+  expectedMessage = "Create report successfully"
+) {
+  const successMessage = $(".toast[role='alert'][aria-live='assertive']");
+  await successMessage.waitForDisplayed({ timeout: 5000 });
+  const messageText = await successMessage.getText();
+  expect(messageText).toContain(expectedMessage);
+}
 
 describe("Create Report Tests", () => {
   before(async () => {
@@ -105,8 +125,10 @@ describe("Create Report Tests", () => {
 
     const startDateInput = $("#startedDate");
     const expiredDateInput = $("#expiredDate");
-    await startDateInput.setValue("11-23-2024");
-    await expiredDateInput.setValue("12-24-2024");
+
+    const { startDate, expiredDate } = getStartDateAndExpiredDate();
+    await startDateInput.setValue(startDate);
+    await expiredDateInput.setValue(expiredDate);
 
     const navBarOption = $("#navbar");
     const filterPaneOption = $("#filterPane");
@@ -128,10 +150,7 @@ describe("Create Report Tests", () => {
     );
     await createButton.click();
 
-    const successMessage = $(".toast.bg-success.show.showing");
-    await successMessage.waitForDisplayed();
-    const isToastDisplayed = await successMessage.isDisplayed();
-    expect(isToastDisplayed).toBe(true);
+    await checkSuccessMessage();
   });
 
   it("should create report via Report ID input", async () => {
@@ -143,8 +162,9 @@ describe("Create Report Tests", () => {
 
     const startDateInput = $("#startedDate");
     const expiredDateInput = $("#expiredDate");
-    await startDateInput.setValue("11-23-2024");
-    await expiredDateInput.setValue("12-24-2024");
+    const { startDate, expiredDate } = getStartDateAndExpiredDate();
+    await startDateInput.setValue(startDate);
+    await expiredDateInput.setValue(expiredDate);
 
     const navBarOption = $("#navbar");
     const filterPaneOption = $("#filterPane");
@@ -163,9 +183,6 @@ describe("Create Report Tests", () => {
     );
     await createButton.click();
 
-    const successMessage = $(".toast.bg-success.show.showing");
-    await successMessage.waitForDisplayed();
-    const isToastDisplayed = await successMessage.isDisplayed();
-    expect(isToastDisplayed).toBe(true);
+    await checkSuccessMessage();
   });
 });

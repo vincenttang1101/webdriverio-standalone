@@ -8,7 +8,8 @@
     "wdio": "wdio run ./wdio.conf.ts"
   },
   "dependencies": {
-    "@wdio/cli": "^9.2.1"
+    "@wdio/cli": "^9.2.1",
+    "dayjs": "^1.11.13"
   },
   "devDependencies": {
     "@wdio/local-runner": "^9.2.1",

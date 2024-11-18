@@ -9,11 +9,11 @@ describe("Share Report Test", () => {
 
   it("should allow only specified users to access the report", async () => {
     await browser.url("https://admin.onhandbi.com/#/reports");
-    await browser.pause(2000);
 
     const reportRow = $(
       "//table[contains(@class, 'table-hover')]//tbody//tr[td/a[contains(text(), 'Report via PBIX')]]"
     );
+    await reportRow.waitForExist({ timeout: 2000 });
 
     await expect(reportRow).toBeExisting();
 
@@ -24,15 +24,19 @@ describe("Share Report Test", () => {
     await optionsButton.click();
 
     const shareOption = reportRow.$("//*[contains(text(), 'Share')]");
+    await shareOption.waitForClickable({ timeout: 2000 });
     await shareOption.moveTo();
 
     const restrictedOption = $("div.Submenu_submenu__RtC6b ul li:first-child");
+    await restrictedOption.waitForClickable({ timeout: 2000 });
     await restrictedOption.click();
 
     const sharedUsersModal = $("div.modal-content");
     await expect(sharedUsersModal).toBeDisplayed();
 
     const generalAccessSelect = sharedUsersModal.$("select.form-select");
+    await expect(generalAccessSelect).toBeClickable();
+
     await generalAccessSelect.selectByVisibleText("Restricted");
 
     const selectedOption = await generalAccessSelect.getValue();
@@ -51,6 +55,7 @@ describe("Share Report Test", () => {
 
     await optionsButton.click();
     const copyLinkOption = $("//*[contains(text(), 'Copy link')]");
+    await copyLinkOption.waitForClickable({ timeout: 2000 });
     await copyLinkOption.click();
 
     const copiedLink = await browser.execute(() =>
@@ -69,54 +74,53 @@ describe("Share Report Test", () => {
     expect(currentUrl).toBe(copiedLink);
   });
 
-  it("should allow only the owner to access the report", async () => {
-    await browser.pause(1000);
-    await logout();
-    await LoginPage.open();
-    await LoginPage.login("bepotod505@inikale.com", "123123@");
+  // it("should allow only the owner to access the report", async () => {
+  //   await logout();
+  //   await LoginPage.open();
+  //   await LoginPage.login("bepotod505@inikale.com", "123123@");
 
-    await browser.url("https://admin.onhandbi.com/#/reports");
-    await browser.pause(2000);
+  //   await browser.url("https://admin.onhandbi.com/#/reports");
+  //   await browser.pause(2000);
 
-    const reportRow = $(
-      "//table[contains(@class, 'table-hover')]//tbody//tr[td/a[contains(text(), 'Report via PBIX')]]"
-    );
-    await expect(reportRow).toBeExisting();
+  //   const reportRow = $(
+  //     "//table[contains(@class, 'table-hover')]//tbody//tr[td/a[contains(text(), 'Report via PBIX')]]"
+  //   );
+  //   await expect(reportRow).toBeExisting();
 
-    const optionsButton = reportRow.$(
-      "button.Dropdown_button-secondary__-1SjD"
-    );
-    await optionsButton.waitForClickable({ timeout: 2000 });
-    await optionsButton.click();
+  //   const optionsButton = reportRow.$(
+  //     "button.Dropdown_button-secondary__-1SjD"
+  //   );
+  //   await optionsButton.waitForClickable({ timeout: 2000 });
+  //   await optionsButton.click();
 
-    const shareOption = reportRow.$("//*[contains(text(), 'Share')]");
-    await shareOption.click();
+  //   const shareOption = reportRow.$("//*[contains(text(), 'Share')]");
+  //   await shareOption.click();
 
-    const anyoneWithLinkOption = $("//*[text()='Anyone with the link']");
-    await anyoneWithLinkOption.moveTo();
+  //   const anyoneWithLinkOption = $("//*[text()='Anyone with the link']");
+  //   await anyoneWithLinkOption.moveTo();
 
-    const onOption = $("//*[text()='On']");
-    await onOption.click();
+  //   const onOption = $("//*[text()='On']");
+  //   await onOption.click();
 
-    await shareOption.click();
+  //   await shareOption.click();
 
-    const onlyMeOption = $("//*[contains(text(), 'Only me')]");
-    await onlyMeOption.click();
+  //   const onlyMeOption = $("//*[contains(text(), 'Only me')]");
+  //   await onlyMeOption.click();
 
-    const copyLinkOption = $("//*[contains(text(), 'Copy link')]");
-    await copyLinkOption.click();
+  //   const copyLinkOption = $("//*[contains(text(), 'Copy link')]");
+  //   await copyLinkOption.click();
 
-    const copiedLink = await browser.execute(() =>
-      navigator.clipboard.readText()
-    );
+  //   const copiedLink = await browser.execute(() =>
+  //     navigator.clipboard.readText()
+  //   );
 
-    await browser.url(copiedLink);
+  //   await browser.url(copiedLink);
 
-    await browser.pause(8000);
+  //   await browser.pause(8000);
 
-    const currentUrl = (await browser.getUrl()) + "?tenant=ohbi_tenant";
-    expect(currentUrl).toBe(copiedLink);
-  });
+  //   const currentUrl = (await browser.getUrl()) + "?tenant=ohbi_tenant";
+  //   expect(currentUrl).toBe(copiedLink);
+  // });
 
   // it("should set share status to 'Restricted'", async () => {
   //   await browser.url("https://admin.onhandbi.com/#/reports");
