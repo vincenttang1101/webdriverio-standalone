@@ -34,28 +34,26 @@ describe("Create Report Tests", () => {
 
   // Validation Tests
   it("should show error for missing required fields", async () => {
-    const createButton = $(
-      "//button[@type='submit' and contains(text(), 'Create')]"
-    );
+    const createButton = $("[data-e2e='create-report-submit-button']");
     await createButton.click();
 
     const isTitleErrorDisplayed = await $(
-      "#report-title + .form-validate-error"
+      "[data-e2e='report-title-input'] + .form-validate-error"
     ).isDisplayed();
     expect(isTitleErrorDisplayed).toBe(true);
 
     const isStartDateErrorDisplayed = await $(
-      "#startedDate + .form-validate-error"
+      "[data-e2e='start-date-input'] + .form-validate-error"
     ).isDisplayed();
     expect(isStartDateErrorDisplayed).toBe(true);
 
     const isExpiredDateErrorDisplayed = await $(
-      "#expiredDate + .form-validate-error"
+      "[data-e2e='end-date-input'] + .form-validate-error"
     ).isDisplayed();
     expect(isExpiredDateErrorDisplayed).toBe(true);
 
     const isReportMethodErrorDisplayed = await $(
-      "#file-input + .form-validate-error"
+      "[data-e2e='powerbi-file-input'] + .form-validate-error"
     ).isDisplayed();
     expect(isReportMethodErrorDisplayed).toBe(true);
   });
