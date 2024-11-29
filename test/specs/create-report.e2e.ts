@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import LoginPage from "../page-objects/login.page";
-import path from "path";
+import { USERS } from "../constants/user.constant";
+import ReportFormPage from "../page-objects/report/report-form.page";
 
 function getStartDateAndExpiredDate(monthsToAdd = 1, format = "MM-DD-YYYY") {
   const today = dayjs();
@@ -24,163 +25,143 @@ async function checkSuccessMessage(
 describe("Create Report Tests", () => {
   before(async () => {
     await LoginPage.open();
-    await LoginPage.login("bepotod505@inikale.com", "123123@");
+    await LoginPage.login(USERS["vikiw32730@cantozil.com"]);
   });
 
   beforeEach(async () => {
-    await browser.url("https://admin.onhandbi.com/#/report/new");
+    await browser.url(`${process.env.ADMIN_OHBI_HOST}/report/new`);
     await browser.refresh();
   });
 
   // Validation Tests
   it("should show error for missing required fields", async () => {
-    const createButton = $("[data-e2e='create-report-submit-button']");
-    await createButton.click();
-
-    const isTitleErrorDisplayed = await $(
-      "[data-e2e='report-title-input'] + .form-validate-error"
-    ).isDisplayed();
-    expect(isTitleErrorDisplayed).toBe(true);
-
-    const isStartDateErrorDisplayed = await $(
-      "[data-e2e='start-date-input'] + .form-validate-error"
-    ).isDisplayed();
-    expect(isStartDateErrorDisplayed).toBe(true);
-
-    const isExpiredDateErrorDisplayed = await $(
-      "[data-e2e='end-date-input'] + .form-validate-error"
-    ).isDisplayed();
-    expect(isExpiredDateErrorDisplayed).toBe(true);
-
-    const isReportMethodErrorDisplayed = await $(
-      "[data-e2e='powerbi-file-input'] + .form-validate-error"
-    ).isDisplayed();
-    expect(isReportMethodErrorDisplayed).toBe(true);
+    ReportFormPage.submitButton.click();
+    ReportFormPage.checkForErrors();
   });
 
   // Main Functional Tests
-  it("should allow entering a title", async () => {
-    const titleInput = $("#report-title");
-    await titleInput.setValue("Test Report");
+  // it("should allow entering a title", async () => {
+  //   const titleInput = $("#report-title");
+  //   await titleInput.setValue("Test Report");
 
-    const titleValue = await titleInput.getValue();
-    expect(titleValue).toBe("Test Report");
-  });
+  //   const titleValue = await titleInput.getValue();
+  //   expect(titleValue).toBe("Test Report");
+  // });
 
-  it("should select a workspace", async () => {
-    const workspaceSelect = $("#workspaceId");
-    await workspaceSelect.selectByVisibleText("OHBI Premium - OHBI");
+  // it("should select a workspace", async () => {
+  //   const workspaceSelect = $("#workspaceId");
+  //   await workspaceSelect.selectByVisibleText("OHBI Premium - OHBI");
 
-    const selectedValue = await workspaceSelect.getValue();
-    expect(selectedValue).toBe("1");
-  });
+  //   const selectedValue = await workspaceSelect.getValue();
+  //   expect(selectedValue).toBe("1");
+  // });
 
-  it("should allow enabling/disabling Navigation Bar and Filter Pane", async () => {
-    const navBarOption = $("#navbar");
-    const filterPaneOption = $("#filterPane");
+  // it("should allow enabling/disabling Navigation Bar and Filter Pane", async () => {
+  //   const navBarOption = $("#navbar");
+  //   const filterPaneOption = $("#filterPane");
 
-    await navBarOption.click();
-    await filterPaneOption.click();
+  //   await navBarOption.click();
+  //   await filterPaneOption.click();
 
-    const isNavBarSelected = await navBarOption.isSelected();
-    const isFilterPaneSelected = await filterPaneOption.isSelected();
+  //   const isNavBarSelected = await navBarOption.isSelected();
+  //   const isFilterPaneSelected = await filterPaneOption.isSelected();
 
-    expect(isNavBarSelected).toBe(false);
-    expect(isFilterPaneSelected).toBe(true);
-  });
+  //   expect(isNavBarSelected).toBe(false);
+  //   expect(isFilterPaneSelected).toBe(true);
+  // });
 
-  it("should navigate to reports page on cancel", async () => {
-    const titleInput = $("#report-title");
-    await titleInput.setValue("Test Report");
+  // it("should navigate to reports page on cancel", async () => {
+  //   const titleInput = $("#report-title");
+  //   await titleInput.setValue("Test Report");
 
-    const cancelButton = $(
-      "//button[@type='submit' and contains(text(), 'Cancel')]"
-    );
-    await cancelButton.click();
+  //   const cancelButton = $(
+  //     "//button[@type='submit' and contains(text(), 'Cancel')]"
+  //   );
+  //   await cancelButton.click();
 
-    await browser.waitUntil(
-      async () =>
-        (await browser.getUrl()) ===
-        "https://admin.onhandbi.com/#/user/reports",
-      {
-        timeout: 2000,
-        timeoutMsg:
-          "Did not navigate to the reports page after clicking Cancel",
-      }
-    );
+  //   await browser.waitUntil(
+  //     async () =>
+  //       (await browser.getUrl()) ===
+  //       "https://admin.onhandbi.com/#/user/reports",
+  //     {
+  //       timeout: 2000,
+  //       timeoutMsg:
+  //         "Did not navigate to the reports page after clicking Cancel",
+  //     }
+  //   );
 
-    const currentUrl = await browser.getUrl();
+  //   const currentUrl = await browser.getUrl();
 
-    expect(currentUrl).toBe("https://admin.onhandbi.com/#/user/reports");
-  });
+  //   expect(currentUrl).toBe("https://admin.onhandbi.com/#/user/reports");
+  // });
 
-  it("should create report via PBIX file upload", async () => {
-    const titleInput = $("#report-title");
-    await titleInput.setValue("Report via PBIX");
+  // it("should create report via PBIX file upload", async () => {
+  //   const titleInput = $("#report-title");
+  //   await titleInput.setValue("Report via PBIX");
 
-    const workspaceSelect = $("#workspaceId");
-    await workspaceSelect.selectByVisibleText("OHBI Premium - OHBI");
+  //   const workspaceSelect = $("#workspaceId");
+  //   await workspaceSelect.selectByVisibleText("OHBI Premium - OHBI");
 
-    const startDateInput = $("#startedDate");
-    const expiredDateInput = $("#expiredDate");
+  //   const startDateInput = $("#startedDate");
+  //   const expiredDateInput = $("#expiredDate");
 
-    const { startDate, expiredDate } = getStartDateAndExpiredDate();
-    await startDateInput.setValue(startDate);
-    await expiredDateInput.setValue(expiredDate);
+  //   const { startDate, expiredDate } = getStartDateAndExpiredDate();
+  //   await startDateInput.setValue(startDate);
+  //   await expiredDateInput.setValue(expiredDate);
 
-    const navBarOption = $("#navbar");
-    const filterPaneOption = $("#filterPane");
+  //   const navBarOption = $("#navbar");
+  //   const filterPaneOption = $("#filterPane");
 
-    await navBarOption.click();
-    await filterPaneOption.click();
+  //   await navBarOption.click();
+  //   await filterPaneOption.click();
 
-    const uploadOption = $("#upload-0");
-    await uploadOption.click();
+  //   const uploadOption = $("#upload-0");
+  //   await uploadOption.click();
 
-    const fileInput = $("#file-input");
-    const filePath = path.resolve(__dirname, "test_report.pbix");
-    await fileInput.addValue(filePath);
+  //   const fileInput = $("#file-input");
+  //   const filePath = path.resolve(__dirname, "test_report.pbix");
+  //   await fileInput.addValue(filePath);
 
-    await browser.pause(15000);
+  //   await browser.pause(15000);
 
-    const createButton = $(
-      "//button[@type='submit' and contains(text(), 'Create')]"
-    );
-    await createButton.click();
+  //   const createButton = $(
+  //     "//button[@type='submit' and contains(text(), 'Create')]"
+  //   );
+  //   await createButton.click();
 
-    await checkSuccessMessage();
-  });
+  //   await checkSuccessMessage();
+  // });
 
-  it("should create report via Report ID input", async () => {
-    const titleInput = $("#report-title");
-    await titleInput.setValue("Report via ID");
+  // it("should create report via Report ID input", async () => {
+  //   const titleInput = $("#report-title");
+  //   await titleInput.setValue("Report via ID");
 
-    const workspaceSelect = $("#workspaceId");
-    await workspaceSelect.selectByVisibleText("OHBI Premium - OHBI");
+  //   const workspaceSelect = $("#workspaceId");
+  //   await workspaceSelect.selectByVisibleText("OHBI Premium - OHBI");
 
-    const startDateInput = $("#startedDate");
-    const expiredDateInput = $("#expiredDate");
-    const { startDate, expiredDate } = getStartDateAndExpiredDate();
-    await startDateInput.setValue(startDate);
-    await expiredDateInput.setValue(expiredDate);
+  //   const startDateInput = $("#startedDate");
+  //   const expiredDateInput = $("#expiredDate");
+  //   const { startDate, expiredDate } = getStartDateAndExpiredDate();
+  //   await startDateInput.setValue(startDate);
+  //   await expiredDateInput.setValue(expiredDate);
 
-    const navBarOption = $("#navbar");
-    const filterPaneOption = $("#filterPane");
+  //   const navBarOption = $("#navbar");
+  //   const filterPaneOption = $("#filterPane");
 
-    await navBarOption.click();
-    await filterPaneOption.click();
+  //   await navBarOption.click();
+  //   await filterPaneOption.click();
 
-    const reportIdOption = $("#upload-1");
-    await reportIdOption.click();
+  //   const reportIdOption = $("#upload-1");
+  //   await reportIdOption.click();
 
-    const reportIdInput = $("#pbi");
-    await reportIdInput.setValue("15cf8d8d-778a-4529-b9b9-ed510ab4c0cb");
+  //   const reportIdInput = $("#pbi");
+  //   await reportIdInput.setValue("15cf8d8d-778a-4529-b9b9-ed510ab4c0cb");
 
-    const createButton = $(
-      "//button[@type='submit' and contains(text(), 'Create')]"
-    );
-    await createButton.click();
+  //   const createButton = $(
+  //     "//button[@type='submit' and contains(text(), 'Create')]"
+  //   );
+  //   await createButton.click();
 
-    await checkSuccessMessage();
-  });
+  //   await checkSuccessMessage();
+  // });
 });

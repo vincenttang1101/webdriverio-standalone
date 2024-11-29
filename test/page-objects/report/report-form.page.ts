@@ -21,11 +21,11 @@ class ReportFormPage {
   }
 
   get startDateError() {
-    return $("[data-e2e='start-date-input'] + .form-validate-error");
+    return $("[data-e2e='start-date-validation-error']");
   }
 
   get endDateError() {
-    return $("[data-e2e='end-date-input'] + .form-validate-error");
+    return $("[data-e2e='end-date-validation-error']");
   }
 
   get powerbiError() {
@@ -61,10 +61,22 @@ class ReportFormPage {
     const isStartDateErrorDisplayed = await this.startDateError.isDisplayed();
     expect(isStartDateErrorDisplayed).toBe(true);
 
-    const isExpiredDateErrorDisplayed = await this.endDateError.isDisplayed();
-    expect(isExpiredDateErrorDisplayed).toBe(true);
+    const isEndDateErrorDisplayed = await this.endDateError.isDisplayed();
+    expect(isEndDateErrorDisplayed).toBe(true);
 
     const isReportMethodErrorDisplayed = await this.powerbiError.isDisplayed();
     expect(isReportMethodErrorDisplayed).toBe(true);
   }
+
+  async validateDateRange() {
+    const startDate = await this.startDateInput.getValue();
+    const endDate = await this.endDateInput.getValue();
+
+    if (new Date(startDate) > new Date(endDate)) {
+      // Show Date Validation Error
+      await this.dateValidationError.waitForDisplayed();
+    }
+  }
 }
+
+export default new ReportFormPage();
