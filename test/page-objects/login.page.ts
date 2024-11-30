@@ -14,8 +14,11 @@ class LoginPage {
   }
 
   async open() {
+    // return await browser.url(
+    //   `https://keycloak.bagiit.vn/realms/ohbi_tenant/protocol/openid-connect/auth?client_id=security-admin-console-dev&redirect_uri=${process.env.ADMIN_OHBI_HOST}/&response_type=code&scope=openid`
+    // );
     return await browser.url(
-      `https://keycloak.bagiit.vn/realms/ohbi_tenant/protocol/openid-connect/auth?client_id=security-admin-console-dev&redirect_uri=${process.env.ADMIN_OHBI_HOST}/&response_type=code&scope=openid`
+      "https://keycloak.bagiit.vn/realms/ohbi_tenant/protocol/openid-connect/auth?client_id=security-admin-console-dev&redirect_uri=http%3A%2F%2Flocalhost%3A3006%2F&state=976420d8-3b53-4e07-ae28-7e8c839688ab&response_mode=fragment&response_type=code&scope=openid&nonce=6d4ddb38-3396-4064-907b-354d61f5723f&code_challenge=sQhpLbJttITFqH5nrIlm5PKUWeB8s3DQdYp5XCoKvuo&code_challenge_method=S256"
     );
   }
 

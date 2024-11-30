@@ -37,6 +37,21 @@ describe("Create Report Tests", () => {
   it("should show error for missing required fields", async () => {
     ReportFormPage.submitButton.click();
     ReportFormPage.checkForErrors();
+
+    // const currentDate = new Date().toString();
+
+    // Kiểm tra lỗi khi Start Date > End Date
+    // await ReportFormPage.validateDateRange({
+    //   startDate: "11-30-2024",
+    //   endDate: "12-10-2023",
+    // });
+
+    // // Kiểm tra lỗi khi Start Date < Current Date
+    // await ReportFormPage.validateDateRange("2022-01-01", "2023-01-01");
+
+    // // Kiểm tra lỗi khi End Date < Current Date
+    // await ReportFormPage.validateDateRange("2023-01-01", "2022-12-31");
+    await browser.pause(10000);
   });
 
   // Main Functional Tests
