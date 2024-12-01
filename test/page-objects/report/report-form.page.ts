@@ -55,6 +55,14 @@ class ReportFormPage {
     await this.titleInput.waitForDisplayed();
     await this.titleInput.setValue(value);
   }
+  async setStartDate(value: string) {
+    await this.startDateInput.waitForDisplayed();
+    await this.startDateInput.setValue(value);
+  }
+  async setEndDate(value: string) {
+    await this.endDateInput.waitForDisplayed();
+    await this.endDateInput.setValue(value);
+  }
   async setWorkspace(value: string) {
     await this.workspaceInput.waitForDisplayed();
     await this.workspaceInput.selectByAttribute("value", value);
@@ -65,27 +73,19 @@ class ReportFormPage {
     return await this.workspaceInput.getValue();
   }
 
-  set startDate(value: string) {
-    this.startDateInput.waitForDisplayed();
-    this.startDateInput.setValue(value);
-  }
-
-  set endDate(value: string) {
-    this.endDateInput.waitForDisplayed();
-    this.endDateInput.setValue(value);
-  }
-
-  /* Method */
   async fillReportForm({
     title,
+    workspace,
     startDate,
     endDate,
   }: {
     title: string;
+    workspace: string;
     startDate: string;
     endDate: string;
   }) {
-    await this.titleInput.setValue(title);
+    await this.setTitle(title);
+    await this.setWorkspace(workspace);
     await this.startDateInput.setValue(startDate);
     await this.endDateInput.setValue(endDate);
   }
@@ -108,50 +108,50 @@ class ReportFormPage {
     expect(isReportMethodErrorDisplayed).toBe(true);
   }
 
-  async validateDateRange({
-    startDate,
-    endDate,
-    expectedStartDateError,
-    expectedEndDateError,
-  }: {
-    startDate: string;
-    endDate: string;
-    expectedStartDateError?: string;
-    expectedEndDateError?: string;
-  }) {
-    this.startDate = startDate;
-    this.endDate = endDate;
-    // Lấy currentDate và chuyển đổi sang MM-DD-YYYY
-    const currentDate = dayjs().format("MM-DD-YYYY");
+  // async validateDateRange({
+  //   startDate,
+  //   endDate,
+  //   expectedStartDateError,
+  //   expectedEndDateError,
+  // }: {
+  //   startDate: string;
+  //   endDate: string;
+  //   expectedStartDateError?: string;
+  //   expectedEndDateError?: string;
+  // }) {
+  //   this.startDate = startDate;
+  //   this.endDate = endDate;
+  //   // Lấy currentDate và chuyển đổi sang MM-DD-YYYY
+  //   const currentDate = dayjs().format("MM-DD-YYYY");
 
-    // Chuyển đổi startDate và endDate sang đối tượng dayjs
-    const startDateObj = dayjs(startDate, "MM-DD-YYYY");
-    const endDateObj = dayjs(endDate, "MM-DD-YYYY");
-    const currentDateObj = dayjs(currentDate, "MM-DD-YYYY");
+  //   // Chuyển đổi startDate và endDate sang đối tượng dayjs
+  //   const startDateObj = dayjs(startDate, "MM-DD-YYYY");
+  //   const endDateObj = dayjs(endDate, "MM-DD-YYYY");
+  //   const currentDateObj = dayjs(currentDate, "MM-DD-YYYY");
 
-    console.log("startDateError", await this.startDateError.getValue());
-    // if (startDateObj.isAfter(endDateObj)) {
-    //   const startDateErrorText = await this.startDateError.getText();
-    //   expect(startDateErrorText).toBe(
-    //     expectedStartDateError || "Start date must be before expired date"
-    //   );
-    // } else if (endDateObj.isBefore(startDateObj)) {
-    //   const endDateErrorText = await this.endDateError.getText();
-    //   expect(endDateErrorText).toBe(
-    //     expectedEndDateError || "Expired date must be after start date"
-    //   );
-    // } else if (startDateObj.isBefore(currentDateObj)) {
-    //   const startDateErrorText = await this.startDateError.getText();
-    //   expect(startDateErrorText).toBe(
-    //     expectedStartDateError || "Please choose future date"
-    //   );
-    // } else if (endDateObj.isBefore(currentDateObj)) {
-    //   const endDateErrorText = await this.endDateError.getText();
-    //   expect(endDateErrorText).toBe(
-    //     expectedEndDateError || "Please choose future date"
-    //   );
-    // }
-  }
+  //   console.log("startDateError", await this.startDateError.getValue());
+  //   // if (startDateObj.isAfter(endDateObj)) {
+  //   //   const startDateErrorText = await this.startDateError.getText();
+  //   //   expect(startDateErrorText).toBe(
+  //   //     expectedStartDateError || "Start date must be before expired date"
+  //   //   );
+  //   // } else if (endDateObj.isBefore(startDateObj)) {
+  //   //   const endDateErrorText = await this.endDateError.getText();
+  //   //   expect(endDateErrorText).toBe(
+  //   //     expectedEndDateError || "Expired date must be after start date"
+  //   //   );
+  //   // } else if (startDateObj.isBefore(currentDateObj)) {
+  //   //   const startDateErrorText = await this.startDateError.getText();
+  //   //   expect(startDateErrorText).toBe(
+  //   //     expectedStartDateError || "Please choose future date"
+  //   //   );
+  //   // } else if (endDateObj.isBefore(currentDateObj)) {
+  //   //   const endDateErrorText = await this.endDateError.getText();
+  //   //   expect(endDateErrorText).toBe(
+  //   //     expectedEndDateError || "Please choose future date"
+  //   //   );
+  //   // }
+  // }
 }
 
 export default new ReportFormPage();

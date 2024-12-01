@@ -56,19 +56,12 @@ describe("Create Report Tests", () => {
   });
 
   it("test", async () => {
+    // Main Functional Tests
+    await ReportFormPage.setTitle("Test");
     await ReportFormPage.setWorkspace("1");
     const workspaceVal = await ReportFormPage.getWorkspace();
     expect(workspaceVal).toBe("1");
   });
-
-  // // Main Functional Tests
-  // it("should allow entering a title", async () => {
-  //   const titleInput = $("#report-title");
-  //   await titleInput.setValue("Test Report");
-
-  //   const titleValue = await titleInput.getValue();
-  //   expect(titleValue).toBe("Test Report");
-  // });
 
   // it("should select a workspace", async () => {
   //   const workspaceSelect = $("#workspaceId");
