@@ -18,24 +18,32 @@ class ReportFormPage {
     return $("[data-e2e='end-date-input']");
   }
 
+  get workspaceInput() {
+    return $("[data-e2e='workspace-input']");
+  }
+  get workspaceValue() {
+    this.workspaceInput.waitForDisplayed();
+    return this.workspaceInput.getValue();
+  }
+
   get powerbiFileInput() {
     return $("[data-e2e='powerbi-file-input']");
   }
 
   get titleError() {
-    return $("[data-e2e='report-title-input'] + .form-validate-error");
+    return $("[data-e2e='report-title-error']");
   }
 
   get startDateError() {
-    return $("[data-e2e='start-date-validation-error']");
+    return $("[data-e2e='start-date-error']");
   }
 
   get endDateError() {
-    return $("[data-e2e='end-date-validation-error']");
+    return $("[data-e2e='end-date-error']");
   }
 
   get powerbiError() {
-    return $("[data-e2e='powerbi-file-input'] + .form-validate-error");
+    return $("[data-e2e='powerbi-file-error']");
   }
 
   get submitButton() {
@@ -43,6 +51,20 @@ class ReportFormPage {
   }
 
   /* Setter */
+  async setTitle(value: string) {
+    await this.titleInput.waitForDisplayed();
+    await this.titleInput.setValue(value);
+  }
+  async setWorkspace(value: string) {
+    await this.workspaceInput.waitForDisplayed();
+    await this.workspaceInput.selectByAttribute("value", value);
+  }
+
+  async getWorkspace() {
+    await this.workspaceInput.waitForDisplayed();
+    return await this.workspaceInput.getValue();
+  }
+
   set startDate(value: string) {
     this.startDateInput.waitForDisplayed();
     this.startDateInput.setValue(value);
@@ -77,7 +99,6 @@ class ReportFormPage {
     expect(isTitleErrorDisplayed).toBe(true);
 
     const isStartDateErrorDisplayed = await this.startDateError.isDisplayed();
-    console.log("startDateError 2", await this.startDateError.getValue());
     expect(isStartDateErrorDisplayed).toBe(true);
 
     const isEndDateErrorDisplayed = await this.endDateError.isDisplayed();

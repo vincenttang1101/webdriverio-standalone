@@ -35,8 +35,10 @@ describe("Create Report Tests", () => {
 
   // Validation Tests
   it("should show error for missing required fields", async () => {
-    ReportFormPage.submitButton.click();
-    ReportFormPage.checkForErrors();
+    await ReportFormPage.submitButton.scrollIntoView();
+    await ReportFormPage.submitButton.moveTo();
+    await ReportFormPage.submitButton.click();
+    await ReportFormPage.checkForErrors();
 
     // const currentDate = new Date().toString();
 
@@ -51,10 +53,15 @@ describe("Create Report Tests", () => {
 
     // // Kiểm tra lỗi khi End Date < Current Date
     // await ReportFormPage.validateDateRange("2023-01-01", "2022-12-31");
-    await browser.pause(10000);
   });
 
-  // Main Functional Tests
+  it("test", async () => {
+    await ReportFormPage.setWorkspace("1");
+    const workspaceVal = await ReportFormPage.getWorkspace();
+    expect(workspaceVal).toBe("1");
+  });
+
+  // // Main Functional Tests
   // it("should allow entering a title", async () => {
   //   const titleInput = $("#report-title");
   //   await titleInput.setValue("Test Report");
