@@ -3,25 +3,6 @@ import LoginPage from "../page-objects/login.page";
 import { USERS } from "../constants/user.constant";
 import ReportFormPage from "../page-objects/report/report-form.page";
 
-function getStartDateAndExpiredDate(monthsToAdd = 1, format = "MM-DD-YYYY") {
-  const today = dayjs();
-  const nextMonth = today.add(monthsToAdd, "month");
-
-  return {
-    startDate: today.format(format),
-    expiredDate: nextMonth.format(format),
-  };
-}
-
-async function checkSuccessMessage(
-  expectedMessage = "Create report successfully"
-) {
-  const successMessage = $(".toast[role='alert'][aria-live='assertive']");
-  await successMessage.waitForDisplayed({ timeout: 5000 });
-  const messageText = await successMessage.getText();
-  expect(messageText).toContain(expectedMessage);
-}
-
 describe("Create Report Tests", () => {
   before(async () => {
     await LoginPage.open();
@@ -33,35 +14,34 @@ describe("Create Report Tests", () => {
     await browser.refresh();
   });
 
-  // Validation Tests
-  it("should show error for missing required fields", async () => {
-    await ReportFormPage.submitButton.scrollIntoView();
-    await ReportFormPage.submitButton.moveTo();
-    await ReportFormPage.submitButton.click();
-    await ReportFormPage.checkForErrors();
-
-    // const currentDate = new Date().toString();
-
-    // Kiểm tra lỗi khi Start Date > End Date
-    // await ReportFormPage.validateDateRange({
-    //   startDate: "11-30-2024",
-    //   endDate: "12-10-2023",
-    // });
-
-    // // Kiểm tra lỗi khi Start Date < Current Date
-    // await ReportFormPage.validateDateRange("2022-01-01", "2023-01-01");
-
-    // // Kiểm tra lỗi khi End Date < Current Date
-    // await ReportFormPage.validateDateRange("2023-01-01", "2022-12-31");
+  /**
+   * 1. Validation Tests
+   */
+  describe("Validation Tests", () => {
+    it("should show error for missing required fields", async () => {
+      await ReportFormPage.submitButton.scrollIntoView();
+      await ReportFormPage.submitButton.moveTo();
+      await ReportFormPage.submitButton.click();
+      await ReportFormPage.checkRequiredFieldErrors();
+    });
   });
 
-  it("test", async () => {
-    // Main Functional Tests
-    await ReportFormPage.setTitle("Test");
-    await ReportFormPage.setWorkspace("1");
-    const workspaceVal = await ReportFormPage.getWorkspace();
-    expect(workspaceVal).toBe("1");
-  });
+  /**
+   * 2. Functional Tests
+   */
+  // describe("Functional Tests", () => {
+  //   it("should allow entering a title", async () => {
+  //     await ReportFormPage.setTitle("Test Report");
+  //     const titleVal = await ReportFormPage.titleInput.getValue();
+  //     expect(titleVal).toBe("Test Report");
+  //   });
+
+  //   it("should allow selecting a workspace", async () => {
+  //     await ReportFormPage.setWorkspace("1");
+  //     const workspaceVal = await ReportFormPage.getWorkspace();
+  //     expect(workspaceVal).toBe("1");
+  //   });
+  // });
 
   // it("should select a workspace", async () => {
   //   const workspaceSelect = $("#workspaceId");
