@@ -8,7 +8,8 @@
       "node",
       "@wdio/globals/types",
       "expect-webdriverio",
-      "@wdio/mocha-framework"
+      "@wdio/mocha-framework",
+      "wdio-intercept-service"
     ],
     "skipLibCheck": true,
     "noEmit": true,

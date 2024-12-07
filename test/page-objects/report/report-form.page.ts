@@ -1,3 +1,5 @@
+import path from "path";
+
 class ReportFormPage {
   /* ===  FORM INPUTS  === */
   get titleInput() {
@@ -17,6 +19,12 @@ class ReportFormPage {
   }
   get advanceOptions() {
     return $$("[data-e2e^='advance-option-']");
+  }
+  get uploadFileRadioInput() {
+    return $("[data-e2e='report-method-radio-0-input']");
+  }
+  get reportIdRadioInput() {
+    return $("[data-e2e='report-method-radio-1-input']");
   }
 
   /* === ERROR MESSAGES === */
@@ -54,6 +62,12 @@ class ReportFormPage {
   async setWorkspace(value: string) {
     await this.workspaceInput.waitForDisplayed();
     await this.workspaceInput.selectByAttribute("value", value);
+  }
+  async setPowerBIFile(filePath: string) {
+    await this.powerbiFileInput.waitForExist();
+    const absolutePath = path.resolve(filePath);
+    const remoteFilePath = await browser.uploadFile(absolutePath);
+    await this.powerbiFileInput.addValue(remoteFilePath);
   }
 
   async getTitle() {
