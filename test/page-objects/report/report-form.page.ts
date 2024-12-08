@@ -17,7 +17,7 @@ class ReportFormPage {
   get powerbiFileInput() {
     return $("[data-e2e='powerbi-file-input']");
   }
-  get advanceOptions() {
+  get advanceOptionsInput() {
     return $$("[data-e2e^='advance-option-']");
   }
   get uploadFileRadioInput() {
@@ -26,7 +26,9 @@ class ReportFormPage {
   get reportIdRadioInput() {
     return $("[data-e2e='report-method-radio-1-input']");
   }
-
+  get reportIdInput() {
+    return $("[data-e2e='report-id-input']");
+  }
   /* === ERROR MESSAGES === */
   get titleError() {
     return $("[data-e2e='report-title-error']");
@@ -42,6 +44,9 @@ class ReportFormPage {
   }
 
   /* ===  FORM ACTIONS  === */
+  get cancelButton() {
+    return $("[data-e2e='cancel-button']");
+  }
   get submitButton() {
     return $("[data-e2e='submit-report-button']");
   }
@@ -69,6 +74,10 @@ class ReportFormPage {
     const remoteFilePath = await browser.uploadFile(absolutePath);
     await this.powerbiFileInput.addValue(remoteFilePath);
   }
+  async setReportId(reportId: string) {
+    await this.reportIdInput.waitForDisplayed();
+    await this.reportIdInput.setValue(reportId);
+  }
 
   async getTitle() {
     await this.titleInput.waitForDisplayed();
@@ -79,7 +88,7 @@ class ReportFormPage {
     return await this.workspaceInput.getValue();
   }
   async getAdvanceOption(value: string) {
-    return $(`[data-e2e='advance-option-${value}']`);
+    return $(`[data-e2e='advance-option-${value}-input']`);
   }
 
   async fillReportForm({
@@ -87,19 +96,85 @@ class ReportFormPage {
     workspace,
     startDate,
     endDate,
+    reportMethod,
+    advanceOptions,
   }: {
     title: string;
-    workspace: string;
+    workspace: "1";
     startDate: string;
     endDate: string;
+    reportMethod:
+      | { type: "upload"; filePath: string }
+      | { type: "reportId"; reportId: string };
+    advanceOptions?: ("filterPane" | "navbar")[];
   }) {
     await this.setTitle(title);
     await this.setWorkspace(workspace);
     await this.startDateInput.setValue(startDate);
     await this.endDateInput.setValue(endDate);
+
+    if (reportMethod.type === "upload") {
+      await this.uploadFileRadioInput.waitForDisplayed();
+      if (!(await this.uploadFileRadioInput.isSelected())) {
+        await this.uploadFileRadioInput.click();
+      }
+      const { filePath } = reportMethod;
+      await this.uploadAndVerifyFile({ filePath });
+    } else {
+      await this.reportIdRadioInput.waitForDisplayed();
+      if (!(await this.reportIdRadioInput.isSelected())) {
+        await this.reportIdRadioInput.click();
+      }
+      const { reportId } = reportMethod;
+      await this.setReportId(reportId);
+    }
+
+    if (advanceOptions && advanceOptions.length > 0) {
+      for (const option of advanceOptions) {
+        const optionElement = await this.getAdvanceOption(option);
+        if (!(await optionElement.isSelected())) {
+          await optionElement.click();
+        }
+      }
+    }
   }
-  async submitReport() {
-    await this.submitButton.click();
+  async uploadAndVerifyFile({ filePath }: { filePath: string }) {
+    await this.uploadFileRadioInput.click();
+    const isChecked = await this.uploadFileRadioInput.isSelected();
+    expect(isChecked).toBe(true);
+
+    const apiEndpoint = `https://report-obis.bagiit.vn/report/upload_import_file`;
+
+    browser.setupInterceptor();
+
+    await this.setPowerBIFile(filePath);
+
+    const requests = await browser.getRequests();
+    const uploadRequest = requests.find((req) => req.url === apiEndpoint);
+
+    expect(uploadRequest).toBeDefined();
+    expect(uploadRequest!.response.statusCode).toBe(200);
+  }
+  async embedReportAndVerify({
+    reportId,
+    workspaceId,
+  }: {
+    reportId: string;
+    workspaceId: string;
+  }) {
+    await this.reportIdRadioInput.click();
+    const isChecked = await this.reportIdRadioInput.isSelected();
+    expect(isChecked).toBe(true);
+
+    const apiEndpoint = `https://report-obis.bagiit.vn/report/getembedinfo?reportId=${reportId}&workspaceId=${workspaceId}`;
+
+    browser.setupInterceptor();
+
+    const requests = await browser.getRequests();
+    const embedRequest = requests.find((req) => req.url === apiEndpoint);
+
+    expect(embedRequest).toBeDefined();
+    expect(embedRequest!.response.statusCode).toBe(200);
   }
   async clickSubmitButton() {
     await this.submitButton.scrollIntoView();
